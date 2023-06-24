@@ -8,7 +8,7 @@ import ast
 
 options = webdriver.ChromeOptions()
 
-config                                = open(r"F:\Sohaib Data\ticket_bot\config.txt",'r')
+config                                = open(r'config.txt','r')
 last_id_                              = config.read()
 dx                                    = ast.literal_eval(last_id_)
 extension_path                        = dx['extension_path']
@@ -24,14 +24,38 @@ input("Configure API key in the chrome extension, \nThen Enter in the command pr
 
 
 
-
 def available_ticket_list():
     month_count = 0
     while True:
         month_count = month_count+1
 #         print(f"{month_count= }")
         time.sleep(2)
-        if month_count>2:
+        if month_count>=2:
+            break
+        try:
+            available_ticket = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".day-number.available.active")))
+        except:
+            available_ticket = []
+        if len(available_ticket) == 0:
+            time.sleep(1)
+            next_month_button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "glyphicon-chevron-right")))
+            next_month_button.click()
+            time.sleep(1.5)
+        else:
+            break
+    try:
+        available_ticket = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".day-number.available.active")))
+    except:
+        available_ticket = []
+    return available_ticket
+
+#In this function user put the month count.
+# def available_ticket_list():
+    month_count = int(input("Enter the number of months to check: "))
+    while True:
+        month_count += 1
+        time.sleep(2)
+        if month_count > 2:
             break
         try:
             available_ticket = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".day-number.available.active")))
@@ -55,6 +79,7 @@ while True:
         print("Start")
         # Demo link
         # driver.get('https://ecm.coopculture.it/index.php?option=com_snapp&view=event&id=CC6A9365-954F-41C5-9DE5-A71176DA7EB2&catalogid=6C165EEE-344F-DBCA-29C4-017A9F29BCD0&lang=it')
+        # Live link
         driver.get('https://ecm.coopculture.it/index.php?option=com_snapp&view=event&id=3793660E-5E3F-9172-2F89-016CB3FAD609&catalogid=B79E95CA-090E-FDA8-2364-017448FF0FA0&lang=it')
         try:
             gdp_button = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'body > div.gdpr_c_r.gdpr_c_r_l > div > div > div.gdpr_col_sm_3.gdpr_r.gdpr_a_c.gdpr_f_e > a.gdpr_btn.gdpr_B_a_c.gdpr_sc')))
@@ -85,12 +110,12 @@ while True:
                     available_button.click()
                     time.sleep(1)
                     try:
-                        input_group = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'input-group')))
+                        input_group = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#qB6B0B700-CEEA-3087-359F-016CB3FAF5CB')))
                         input_group.click()
-                        input_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'input')))
-                        input_element.clear()
-                        time.sleep(0.5)
-                        input_element.send_keys('1')
+                        # input_element = wait.until(EC.presence_of_element_located((By.TAG_NAME, 'input')))
+                        input_group.clear()
+                        time.sleep(0.3)
+                        input_group.send_keys('1')
                         modal_footer_elements = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".modal-footer")))
                         # Iterate through the modal footers to find the add to cart button
                         for modal_footer in modal_footer_elements:
@@ -111,8 +136,7 @@ while True:
                     except:
                         pass
                     break
-        print("Sleep")
+        print("Sleep For 1 minute!!😴😴")
         time.sleep(60)
     except:
         driver.refresh()
-    
