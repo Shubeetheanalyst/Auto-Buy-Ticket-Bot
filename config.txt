@@ -1,0 +1,4 @@
+{
+'extension_path':r"F:\Sohaib Data\ticket_bot\anticaptcha-plugin_v0.63"
+
+}

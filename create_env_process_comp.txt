@@ -1,0 +1,7 @@
+python -m venv env
+anv\Scripts\activate
+pip install auto-py-to-exe
+auto-py-to-exe
+#auto make requirermnt.txt file
+
+pip freeze > requirement.txt
